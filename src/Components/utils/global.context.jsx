@@ -1,15 +1,34 @@
-import { createContext } from "react";
+import React, { createContext, useReducer } from "react";
 
-export const initialState = {theme: "", data: []}
+export const GlobalContext = createContext();
 
-export const ContextGlobal = createContext(undefined);
+const initialState = {
+  theme: "light",
+  dentists: [],
+  favorites: JSON.parse(localStorage.getItem("favorites")) || []
+};
 
-export const ContextProvider = ({ children }) => {
-  //Aqui deberan implementar la logica propia del Context, utilizando el hook useMemo
+const globalReducer = (state, action) => {
+  switch (action.type) {
+    case "TOGGLE_THEME":
+      return { ...state, theme: state.theme === "light" ? "dark" : "light" };
+    case "SET_DENTISTS":
+      return { ...state, dentists: action.payload };
+    case "ADD_FAVORITE":
+      const updatedFavorites = [...state.favorites, action.payload];
+      localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+      return { ...state, favorites: updatedFavorites };
+    default:
+      return state;
+  }
+};
+
+export const GlobalProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(globalReducer, initialState);
 
   return (
-    <ContextGlobal.Provider value={{}}>
+    <GlobalContext.Provider value={{ state, dispatch }}>
       {children}
-    </ContextGlobal.Provider>
+    </GlobalContext.Provider>
   );
 };

@@ -14,8 +14,13 @@ const Favs = () => {
       <h1>Dentists Favs</h1>
       <div className="card-grid">
         {state.favorites.map((fav) => (
-        <Card key={fav.id} dentist={fav} />
-      ))}
+          <Card 
+            key={fav.id} 
+            id={fav.id}   
+            name={fav.name}   
+            username={fav.username}  
+          />
+        ))}
       </div>
     </>
   );

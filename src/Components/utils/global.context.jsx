@@ -4,20 +4,23 @@ export const GlobalContext = createContext();
 
 const initialState = {
   theme: "light",
-  dentists: [],
-  favorites: JSON.parse(localStorage.getItem("favorites")) || []
+  dentist: [],
+  favorites: JSON.parse(localStorage.getItem("favoritos")) || [],
 };
 
 const globalReducer = (state, action) => {
   switch (action.type) {
-    case "TOGGLE_THEME":
-      return { ...state, theme: state.theme === "light" ? "dark" : "light" };
-    case "SET_DENTISTS":
-      return { ...state, dentists: action.payload };
+    case "SET_DENTIST":  
+      return { ...state, dentist: action.payload };
+    case "SET_THEME":
+      return { ...state, theme: action.payload };
     case "ADD_FAVORITE":
-      const updatedFavorites = [...state.favorites, action.payload];
-      localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-      return { ...state, favorites: updatedFavorites };
+      return { ...state, favorites: [...state.favorites, action.payload] };
+    case "REMOVE_FAVORITE":
+      return {
+        ...state,
+        favorites: state.favorites.filter((fav) => fav.id !== action.payload),
+      };
     default:
       return state;
   }
